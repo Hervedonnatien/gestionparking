@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Paiement!{% endblock %}
+
+{% block content %}
+<div class="text-center" right:>
+  <br /><br />
+  <h4 class="text center">Fiche Paiement</h4>
+  {% for message in app.flashes('success') %}
+  <div class="alert alert-success">
+    {{ message }}
+  </div>
+  {% endfor %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"></h1>
+    <a href="#" data-toggle="modal" data-target="#myModal"
+      class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">Ajout Fiche Paiement</a>
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <center>
+              <i>
+                <h4>
+                  <center>Ajouter paiement</center>
+                </h4>
+              </i>
+            </center>
+            {{ form_start(form) }}
+            {{ form_rest(form) }}
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            {{ form_end(form) }}
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="shadow">
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="text-dark text-center">
+        <th>Proprietaire </th>
+        <th>Mode Paiement</th>
+        <th>Montant (en Ariary)</th>
+        <th>Date Début Paiement</th>
+        <th>Date Fin Paiement</th>
+        <th>Action</th>
+      </thead>
+      <tbody>
+        {% for paiement in paiement %}
+        <tr>
+          <td>{{ paiement.proprietaire.nomProprietaire }} <td>
+          <td>{{ paiement.modePaiement }}</td>
+          <td>{{ paiement.montant }}</td>
+          <td>{{ paiement.dateDebut|date("d/m/Y") }}</td>
+          <td>{{ paiement.dateFin|date("d/m/Y") }}</td>
+          <td>
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATORS') %}
+            <a href="#" onclick="edit({{ paiement.id }})" class="btn btn-secondary" style="font-size: 10px">Editer</a>
+            {% endif %}
+            <!-- The Modal -->
+            <div class="modal fade" id="myModal2">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    <div class="#" style="padding-top: 20px">
+                      <center>
+                        <i>
+                          <h4>
+                            <center>Modification</center>
+                          </h4>
+                        </i>
+                      </center>
+                      <form name="client" method="post" id="p">
+
+                      </form>
+                      <br />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% if  is_granted('ROLE_ADMIN') %}
+            <form method="post" action="{{ path('deletePaiement', { id: paiement.id }) }}" style="display: inline-block"
+              onsubmit="return confirm('Etes-vous vraiment sûr de supprimer??')">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ paiement.id) }}" />
+              <button class="btn btn-danger" style="font-size: 10px">
+                Supprimer
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% if not paiement %}
+        <tr class="text-center" style="height: 300px">
+          <td colspan="7">
+            <div style="margin-top: 120px">
+              <code>Liste vide</code>
+            </div>
+          </td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  function edit(id) {
+    $.ajax({
+      url: "/paiement/" + id + "/edit",
+    }).done(
+      function (data) {
+        var modal = new bootstrap.Modal(document.getElementById('myModal2'), {
+          keyboard: false
+        })
+        $('#p').attr('action', '/update/' + data.id);
+
+        modal.show();
+      }
+    )
+
+  }
+</script>
+{% endblock %}

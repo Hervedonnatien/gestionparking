@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %} {% block title %} Modifier Proprietaire !{%
+endblock %} {% block body %}
+<div class="container">
+  <div class="row justify-content-center mt-lg-5">
+    <div
+      class="col-md-6 super"
+      style="background-color: #fff; margin-top: 30px"
+    >
+      <div style="text-align: center">
+        <span class="logo-login">
+          <img
+            src="{{ asset('photos/images/logo.jpg') }}"
+            width="100px"
+            height="100px"
+            style="border-radius: 50px"
+          />
+        </span>
+      </div>
+
+      <div class="bg-shadow bg-light" style="padding-top: 20px">
+        <center>
+          <i
+            ><h4><center>Modification</center></h4></i
+          >
+        </center>
+        {{ form_start(form) }}
+        {{ form_rest(form) }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        {{ form_end(form) }}
+        <br />
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

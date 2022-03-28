@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %} {% block title %}Chauffeur{% endblock %} {% block
+content %}
+<h3><center>Modifier</center></h3>
+{{ include("chauffeur/_form.html.twig", { button_label: "Save" }) }}
+<div class="row">
+  <div class="col-sm-3">
+    <a href="{{ path('chauffeur') }}" class="btn btn-warning">Back to list</a>
+  </div>
+  <div class="col-md-7"></div>
+  <div class="col-sm-2">
+    {{ include("chauffeur/_delete_form.html.twig") }}
+  </div>
+</div>
+<br /><br />
+{% endblock %}

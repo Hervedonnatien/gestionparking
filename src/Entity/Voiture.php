@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VoitureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,11 +27,6 @@ class Voiture
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $cooperative;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $typeVoiture;
 
     /**
@@ -40,17 +37,23 @@ class Voiture
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $visuel;
+    private $destination;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Chauffeur::class, mappedBy="numVoiture")
      */
-    private $nomProprietaire;
+    private $chauffeurs;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Parking::class, mappedBy="numVoiture")
      */
-    private $image;
+    private $parkings;
+
+    public function __construct()
+    {
+        $this->chauffeurs = new ArrayCollection();
+        $this->parkings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -65,18 +68,6 @@ class Voiture
     public function setNumVoiture(string $numVoiture): self
     {
         $this->numVoiture = $numVoiture;
-
-        return $this;
-    }
-
-    public function getCooperative(): ?string
-    {
-        return $this->cooperative;
-    }
-
-    public function setCooperative(string $cooperative): self
-    {
-        $this->cooperative = $cooperative;
 
         return $this;
     }
@@ -105,38 +96,81 @@ class Voiture
         return $this;
     }
 
-    public function getVisuel(): ?string
+    public function getDestination(): ?string
     {
-        return $this->visuel;
+        return $this->destination;
     }
 
-    public function setVisuel(string $visuel): self
+    public function setDestination(string $destination): self
     {
-        $this->visuel = $visuel;
+        $this->destination = $destination;
 
         return $this;
     }
 
-    public function getNomProprietaire(): ?string
+    public function __toString()
     {
-        return $this->nomProprietaire;
+        return $this->numVoiture;
     }
 
-    public function setNomProprietaire(string $nomProprietaire): self
+    /**
+     * @return Collection|Chauffeur[]
+     */
+    public function getChauffeurs(): Collection
     {
-        $this->nomProprietaire = $nomProprietaire;
+        return $this->chauffeurs;
+    }
+
+    public function addChauffeur(Chauffeur $chauffeur): self
+    {
+        if (!$this->chauffeurs->contains($chauffeur)) {
+            $this->chauffeurs[] = $chauffeur;
+            $chauffeur->setNumVoiture($this);
+        }
 
         return $this;
     }
 
-    public function getImage()
+    public function removeChauffeur(Chauffeur $chauffeur): self
     {
-        return $this->image;
+        if ($this->chauffeurs->contains($chauffeur)) {
+            $this->chauffeurs->removeElement($chauffeur);
+            // set the owning side to null (unless already changed)
+            if ($chauffeur->getNumVoiture() === $this) {
+                $chauffeur->setNumVoiture(null);
+            }
+        }
+
+        return $this;
     }
 
-    public function setImage($image): self
+    /**
+     * @return Collection|Parking[]
+     */
+    public function getParkings(): Collection
     {
-        $this->image = $image;
+        return $this->parkings;
+    }
+
+    public function addParking(Parking $parking): self
+    {
+        if (!$this->parkings->contains($parking)) {
+            $this->parkings[] = $parking;
+            $parking->setNumVoiture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParking(Parking $parking): self
+    {
+        if ($this->parkings->contains($parking)) {
+            $this->parkings->removeElement($parking);
+            // set the owning side to null (unless already changed)
+            if ($parking->getNumVoiture() === $this) {
+                $parking->setNumVoiture(null);
+            }
+        }
 
         return $this;
     }

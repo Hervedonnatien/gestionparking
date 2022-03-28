@@ -1,35 +1,15 @@
-{% extends 'base.html.twig' %} {% block title %} Modifier Voiture !{% endblock
-%} {% block body %}
-<div class="container">
-  <div class="row justify-content-center mt-lg-5">
-    <div
-      class="col-md-6 super"
-      style="background-color: #fff; margin-top: 30px"
-    >
-      <div style="text-align: center">
-        <span class="logo-login">
-          <img
-            src="{{ asset('photos/images/logo.jpg') }}"
-            width="100px"
-            height="100px"
-            style="border-radius: 50px"
-          />
-        </span>
-      </div>
-
-      <div class="bg-shadow bg-light" style="padding-top: 20px">
-        <center>
-          <i
-            ><h4><center>Modification</center></h4></i
-          >
-        </center>
-        {{ form_start(form) }}
-        {{ form_rest(form) }}
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        {{ form_end(form) }}
-        <br />
-      </div>
-    </div>
+{% extends 'base.html.twig' %} {% block title %}Voiture{% endblock %} {% block
+content %}
+<h3><center>Modifier</center></h3>
+{{ include("voiture/_form.html.twig", { button_label: "Save" }) }}
+<div class="row">
+  <div class="col-sm-3">
+    <a href="{{ path('voiture') }}" class="btn btn-warning">Back to list</a>
+  </div>
+  <div class="col-md-7"></div>
+  <div class="col-sm-2">
+    {{ include("voiture/_delete_form.html.twig") }}
   </div>
 </div>
+<br /><br />
 {% endblock %}

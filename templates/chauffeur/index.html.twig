@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %} {% block title %}Voiture{%
+{% extends 'base.html.twig' %} {% block title %}Chauffeur{%
     endblock %} {% block content %}
     <div class="text-center" right:>
-        <h4 class="text center">Voiture</h4>
+        <h4 class="text center">Chauffeur</h4>
         {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -38,31 +38,29 @@
         <div class="shadow">
             <table class="table table-striped table-bordered table-hover">
                 <thead class="text-dark text-center">
+                    <th>Nom Chauffeur</th>
+                    <th>Numéro Chauffeur</th>
                     <th>Numéro Voiture</th>
-                    <th>Type de Voiture</th>
-                    <th>Ligne</th>
-                    <th>Destination</th>
                     <th>Action</th>
                 </thead>
                 <tbody>
-                    {% for voiture in voiture %}
+                    {% for chauffeur in chauffeur %}
                     <tr>
-                        <td>{{ voiture.numVoiture }}</td>
-                        <td>{{ voiture.typeVoiture }}</td>
-                        <td>{{ voiture.ligne }}</td>
-                        <td>{{ voiture.destination }}</td>                 
+                        <td>{{ chauffeur.nomChauffeur }}</td>
+                        <td>{{ chauffeur.numChauffeur }}</td>
+                        <td>{{ chauffeur.numVoiture }}</td>           
                         <td>
-                            <a class="text-primary" style="font-size: 14px" href="{{ path('voiture_show', {'id': voiture.id}) }}"><i class="fas fa-eye"></i></a>
+                            <a class="text-primary" style="font-size: 14px" href="{{ path('chauffeur_show', {'id': chauffeur.id}) }}"><i class="fas fa-eye"></i></a>
                             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATORS') %}
-                            <a href="{{ path('editVoiture', {'id': voiture.id}) }}" class="text-secondary"
+                            <a href="{{ path('editChauffeur', {'id': chauffeur.id}) }}" class="text-secondary"
                                 style="font-size: 14px"><i class="fas fa-edit"></i></a>
                             {% endif %}
                             {% if  is_granted('ROLE_ADMIN') %}
-                            <form method="post" action="{{ path('deleteVoiture', { id: voiture.id }) }}"
+                            <form method="post" action="{{ path('deleteChauffeur', { id: chauffeur.id }) }}"
                                 style="display: inline-block"
                                 onsubmit="return confirm('Etes-vous vraiment sûr de supprimer??')">
                                 <input type="hidden" name="_method" value="DELETE" />
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ voiture.id) }}" />
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chauffeur.id) }}" />
                                 <button class="text-danger" style="font-size: 14px"><i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -70,7 +68,7 @@
                         </td>
                     </tr> 
                     {% endfor %}
-                    {% if not voiture %}
+                    {% if not chauffeur %}
                     <tr class="text-center" style="height: 300px">
                         <td colspan="12">
                             <div style="margin-top: 120px">

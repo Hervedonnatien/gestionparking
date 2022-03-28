@@ -12,8 +12,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class VoitureController extends AbstractController
 {
+
     /**
-     * @var ClientRepository
+     * @var VoitureRepository
      */
     private $repository;
 
@@ -23,10 +24,8 @@ class VoitureController extends AbstractController
         $this->em = $em;
     }
 
-
     /**
      * @Route("/voiture", name="voiture")
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(Request $request)
     {
@@ -37,19 +36,6 @@ class VoitureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //recuperation d'image
-            $image = $form->get('image')->getData();
-            //boucle
-            foreach ($image as $image) {
-                //generer un fichier dans uploads
-                $image->move(
-                    $this->getParameter('images_directory'),
-                    $this->fichier
-                );
-                // on stocke l'image dans la base de données
-
-            }
-            $this->em->getDoctrine()->getManager();
             $this->em->persist($voiture);
             $this->em->flush();
             $this->addFlash('success', 'Bien ajoutée avec succès');
@@ -64,32 +50,21 @@ class VoitureController extends AbstractController
 
     /**
      * @Route("/voiture/{id}/edit", name="editVoiture", methods="GET|POST")
-     * @param Voiture $voiture
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit(Voiture $voiture, Request $request)
     {
-        return $this->json($voiture, 200);
-    }
+        $form = $this->createForm(VoitureType::class, $voiture);
+        $form->handleRequest($request);
 
-    /**
-     * @Route("/update/{id}", name="update", methods="POST")
-     */
-    public function update(Voiture $voiture, Request $request)
-    {
-        $data = $request->request;
-        $data = $data->all();
-        $voiture->setNumVoiture($data['numVoiture'])
-            ->setCooperative($data['cooperative'])
-            ->setTypeVoiture($data['typeVoiture'])
-            ->setLigne($data['ligne'])
-            ->setVisuel($data['visuel'])
-            ->setNomProprietaire($data['nomProprietaire'])
-            ->setImage($data['image']);
-
-        $this->em->persist($voiture);
-        $this->em->flush();
-        return $this->redirectToRoute('voiture');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            $this->addFlash('success', 'Bien editée avec succès');
+            return $this->redirectToRoute('voiture');
+        }
+        return $this->render('voiture/edit.html.twig', [
+            'voiture' => $voiture,
+            'form' => $form->createView()
+        ]);
     }
 
     /**
@@ -108,24 +83,16 @@ class VoitureController extends AbstractController
     }
 
     /**
-     * @Route("/voiture_add", name="addVoiture")
+     * @Route("voiture/{id}", name="voiture_show")
      */
-    public function add(Request $request)
+    public function show(Voiture $voiture)
     {
-        $voiture = new Voiture();
         $form = $this->createForm(VoitureType::class, $voiture);
-        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->getDoctrine()->getManager();
-            $this->em->persist($voiture);
-            $this->em->flush();
-            $this->addFlash('success', 'Bien ajoutée avec succès');
-            return $this->redirectToRoute('voiture');
         }
-        return $this->render('voiture/add.html.twig', [
+        return $this->render('voiture/show.html.twig', [
             'voiture' => $voiture,
-            'form' => $form->createView()
         ]);
     }
 }
